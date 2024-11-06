@@ -12,10 +12,15 @@ find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
 
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
+rosidl_generate_interfaces(${PROJECT_NAME}
+"srv/Status.srv"
+)
+
 
 # Inclusiones
 include_directories(
@@ -29,6 +34,10 @@ install(TARGETS
         reactive
         DESTINATION lib/${PROJECT_NAME}
 )
+
+rosidl_get_typesupport_target(cpp_typesupport_target ${PROJECT_NAME}
+"rosidl_typesupport_cpp")
+target_link_libraries(reactive "${cpp_typesupport_target}")
 
 ament_target_dependencies(reactive rclcpp std_msgs geometry_msgs sensor_msgs nav_msgs)
 

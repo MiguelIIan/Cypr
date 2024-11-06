@@ -1,7 +1,8 @@
 #include <navigation/reactive.hpp>
 
 using std::placeholders::_1;
-
+using std::placeholders::_2;
+using std::placeholders::_3;
 const float Vp = 0.1;
 const float w = 0.5;
 
@@ -13,9 +14,19 @@ Reactivo::Reactivo():Node("reactive"){
     sub_pose = this->create_subscription<geometry_msgs::msg::Pose>("/PioneerP3DX/ground_truth",10,std::bind(&Reactivo::estimated_pose,this,_1));
     sub_odom = this->create_subscription<nav_msgs::msg::Odometry>("/PioneerP3DX/odom",10,std::bind(&Reactivo::odom,this,_1));
 
+    server_status = this->create_service<navigation::srv::Status>("servicio_estado",std::bind(&Reactivo::handle_status_service,this,_1,_2,_3));
+
+
+    giroder = 0;
+    giroizq = 0;
+    pasos = 0;
+
     movimiento.linear.x = 0;
     movimiento.linear.y = 0;
     movimiento.angular.z = 0;
+
+    derecha = false;
+    izquierda = false;
 }
 
 Reactivo::~Reactivo(){
@@ -23,46 +34,68 @@ Reactivo::~Reactivo(){
 }
 
 void Reactivo::proximo_paso(){
-    bool derecha = false;
-    bool izquierda = false;
+    
 
     if (nearest_obstacle_distance < 0.5){
-        if (pos_in_array>= 360 && pos_in_array<=500 && derecha==false){
-            izquierda = true;
-            movimiento.linear.x = 0;
-            movimiento.linear.y =0;
-            movimiento.angular.z = -w;
-        } else if (pos_in_array < 324 && pos_in_array>180 && izquierda==false){
+        if (pos_in_array>= 360 && pos_in_array<=500 && izquierda==false){
+            if (derecha != true){
+                giroder++;
+            }
             derecha = true;
             movimiento.linear.x = 0;
             movimiento.linear.y =0;
-            movimiento.angular.z = w;
-        } else if (pos_in_array > 324 && pos_in_array<360 || pos_in_array < 324 && pos_in_array>180 && pos_in_array> 360 && pos_in_array<500){
-            movimiento.linear.x = -Vp;
+            movimiento.angular.z = -w;
+        } else if (pos_in_array < 324 && pos_in_array>180 && derecha==false){
+            if (izquierda != true){
+                giroizq++;
+            }
+            izquierda = true;
+            movimiento.linear.x = 0;
             movimiento.linear.y =0;
-            movimiento.angular.z = 2*w;
-        } else {
+            movimiento.angular.z = w;
+        } else if (pos_in_array > 324 && pos_in_array<360){
+            if (derecha == true){
+                movimiento.linear.x = 0;
+                movimiento.linear.y =0;
+                movimiento.angular.z = -w;
+            } else {
+                if (izquierda != true){
+                    giroizq++;
+                }
+                izquierda = true;
+                movimiento.linear.x = 0;
+                movimiento.linear.y =0;
+                movimiento.angular.z = w;
+            }
+            
+        } else if (pos_in_array > 0 && pos_in_array<180 || pos_in_array < 684 && pos_in_array>500){
             derecha = false;
             izquierda = false;
             movimiento.linear.x = Vp;
             movimiento.linear.y =0;
             movimiento.angular.z = 0;
+            pasos++;
         }
     } else {
         movimiento.linear.x = Vp;
         movimiento.linear.y =0;
         movimiento.angular.z = 0;
+        pasos++;
     }
     
     pub_vel -> publish(movimiento);
 }
 
 void Reactivo::estimated_pose(const geometry_msgs::msg::Pose::SharedPtr groundtruth){
-    printf("hola");
+    geometry_msgs::msg::Pose posicion;
+
+    groundtruth->orientation.z;
+
+    RCLCPP_INFO(this->get_logger(),"Valor en x del groundtruth: %f", groundtruth->position.x);
 }
 
 void Reactivo::odom(const nav_msgs::msg::Odometry::SharedPtr odometria){
-    printf("adios");
+    RCLCPP_INFO(this->get_logger(),"Valor de la odometría: %f", odometria->twist.twist.linear.x);
 }
 
 void Reactivo::process_laser(const sensor_msgs::msg::LaserScan::SharedPtr msg){
@@ -78,7 +111,18 @@ void Reactivo::process_laser(const sensor_msgs::msg::LaserScan::SharedPtr msg){
         nearest_obstacle_distance, pos_in_array, n_ranges);
 }
 
+void Reactivo::handle_status_service(
+    const std::shared_ptr<rmw_request_id_t> request_header,
+    const std::shared_ptr<navigation::srv::Status::Request> request,
+    std::shared_ptr<navigation::srv::Status::Response> response)
+{
+    RCLCPP_INFO(this->get_logger(),"Has llamado al servicio de estado");
 
+    response->giroderecha=giroder;
+    response->giroizquierda=giroizq;
+    response->distancia=pasos;
+
+}
 
 //---------------------
 //       Main
