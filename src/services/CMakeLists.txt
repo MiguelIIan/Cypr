@@ -11,33 +11,31 @@ find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
-
 rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/Clear.srv"
   "srv/Get.srv"
   "srv/Set.srv"
 )
 
-
-
 include_directories(
   include
 )
 
-add_executable(ServerNode src/ServerNode.cpp)
+add_executable(servernode src/servernode.cpp)
 add_executable(ClientNode src/ClientNode.cpp)
 
-rosidl_get_typesupport_target(cpp_typesupport_target ${PROJECT_NAME}
-"rosidl_typesupport_cpp")
-target_link_libraries(ServerNode "${cpp_typesupport_target}")
-
 install(TARGETS
-        ServerNode
+        servernode
         ClientNode
         DESTINATION lib/${PROJECT_NAME}
 )
 
-ament_target_dependencies(ServerNode rclcpp std_msgs)
+rosidl_get_typesupport_target(cpp_typesupport_target ${PROJECT_NAME}
+"rosidl_typesupport_cpp")
+target_link_libraries(servernode "${cpp_typesupport_target}")
+
+ament_target_dependencies(servernode rclcpp std_msgs)
+ament_target_dependencies(ClientNode rclcpp std_msgs)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
