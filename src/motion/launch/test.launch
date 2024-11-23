@@ -1,5 +1,0 @@
-<launch>
-    <node pkg="motion" exec="controller" name="controller"/>
-    <node pkg="motion" exec="actuator" name="actuator"/>
-    <node pkg="turtlesim" exec="turtlesim_node" name="turtle1"/>
-</launch>
