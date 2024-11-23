@@ -1,0 +1,4 @@
+---
+int32 giroderecha
+int32 giroizquierda
+int32 distancia
