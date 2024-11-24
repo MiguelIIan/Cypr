@@ -37,8 +37,8 @@ Reactivo::~Reactivo(){
 
 void Reactivo::proximo_paso(){
     
-    if (nearest_obstacle_distance < 0.35){
-        if ((pos_in_array>= 360 && pos_in_array<=530 && izquierda==false)|| derecha == true){
+    if (nearest_obstacle_distance < 0.4){
+        if ((pos_in_array>= 343 && pos_in_array<=510 && izquierda==false)|| derecha == true){
             if (derecha != true){
                 giroder++;
             }
@@ -46,7 +46,7 @@ void Reactivo::proximo_paso(){
             movimiento.linear.x = 0;
             movimiento.linear.y =0;
             movimiento.angular.z = -w;
-        } else if ((pos_in_array < 324 && pos_in_array>150 && derecha==false) || izquierda == true){
+        } else if ((pos_in_array < 342 && pos_in_array>170 && derecha==false) || izquierda == true){
             if (izquierda != true){
                 giroizq++;
             }
@@ -54,22 +54,7 @@ void Reactivo::proximo_paso(){
             movimiento.linear.x = 0;
             movimiento.linear.y =0;
             movimiento.angular.z = w;
-        } else if (pos_in_array > 324 && pos_in_array<360){
-            if (derecha == true){
-                movimiento.linear.x = 0;
-                movimiento.linear.y =0;
-                movimiento.angular.z = -w;
-            } else {
-                if (izquierda != true){
-                    giroizq++;
-                }
-                izquierda = true;
-                movimiento.linear.x = -Vp;
-                movimiento.linear.y =0;
-                movimiento.angular.z = w;
-            }
-            
-        } else if ((pos_in_array > 0 && pos_in_array<150) || (pos_in_array < 684 && pos_in_array>530)){
+        } else if ((pos_in_array > 0 && pos_in_array<170) || (pos_in_array < 684 && pos_in_array>510)){
             derecha = false;
             izquierda = false;
             movimiento.linear.x = Vp;
