@@ -1,0 +1,25 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/miguelian/cypr_ws/install/navigation/include/**",
+        "/home/miguelian/cypr_ws/install/localization/include/**",
+        "/opt/ros/humble/include/**",
+        "/home/miguelian/cypr_ws/src/Cypr/localization/include/**",
+        "/home/miguelian/cypr_ws/src/Cypr/motion/include/**",
+        "/home/miguelian/cypr_ws/src/Cypr/navigation/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}
