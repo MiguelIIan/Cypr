@@ -14,3 +14,11 @@ Aqui tenemos las prácticas 3 y 4. En ellas solo vemos como funciona los distint
 ## Paquete "navigation"
 
 Este es el ejercicio puntuable de robótica móvil. Consiste en un programa que controle las reacciones al entorno de un robot móvil diferencial(dos ruedas) basándose en un sensor Lidar que devuelve la ubicación de los objetos cercanos.
+
+## Paquete "control_brazo"
+
+Este es el ejercicio evaluable del manipulador. Consiste en, en Coppelia, simular un manipulador que escogerá cubos según su altura, si los acepta los coloca en una torre y si los rechaza los lleva a una cinta transportadora que los desecha. En la carpeta "Video" hay un ejemplo visual.
+
+## Paquete "warrior_13" 
+
+Este es el proyecto final de la asignatura, y consiste en controlar un robot dentro de una arena de batalla en las que hay escudos y martillos como armas para enfrentarse con los robots de otros equipos. En la carpeta "Video" hay un ejemplo visual.
